@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divakar Singaravelu — Full-Stack Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --card: #161616;
+    --accent: #c8f135;
+    --accent2: #5dffd3;
+    --text: #f0f0f0;
+    --muted: #888;
+    --border: #222;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 4rem;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.4;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(200,241,53,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200,241,53,0.08);
+    border: 1px solid rgba(200,241,53,0.25);
+    color: var(--accent);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-name .accent { color: var(--accent); }
+
+  .hero-subtitle {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 520px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0a;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.9rem 2rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(200,241,53,0.3);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.9rem 2rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem; left: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+
+  .hero-scroll::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--muted);
+  }
+
+  /* SECTION */
+  section {
+    padding: 6rem 4rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+  }
+
+  /* ABOUT */
+  #about .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-text p span { color: var(--text); }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .stat-item {
+    background: var(--card);
+    padding: 2rem;
+  }
+
+  .stat-number {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  /* SKILLS */
+  #skills .skills-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .skill-group {
+    background: var(--card);
+    padding: 2rem;
+  }
+
+  .skill-group-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 1.25rem;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    cursor: default;
+  }
+
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,241,53,0.05);
+  }
+
+  /* PROJECTS */
+  #projects .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .project-card {
+    background: var(--card);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .project-card:hover { background: #1a1a1a; }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 4rem;
+    font-weight: 800;
+    color: rgba(200,241,53,0.08);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-desc {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-bullets {
+    list-style: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-bullets li {
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.4rem;
+  }
+
+  .project-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tech-badge {
+    background: rgba(200,241,53,0.08);
+    border: 1px solid rgba(200,241,53,0.2);
+    color: var(--accent);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+
+  .project-link:hover { gap: 0.75rem; }
+
+  /* EDUCATION */
+  #education .edu-timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .edu-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .edu-item {
+    position: relative;
+    padding-bottom: 3rem;
+    padding-left: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .edu-item:nth-child(1) { animation-delay: 0.1s; }
+  .edu-item:nth-child(2) { animation-delay: 0.2s; }
+  .edu-item:nth-child(3) { animation-delay: 0.3s; }
+  .edu-item:nth-child(4) { animation-delay: 0.4s; }
+
+  .edu-item::before {
+    content: '';
+    position: absolute;
+    left: -6px; top: 6px;
+    width: 12px; height: 12px;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+  }
+
+  .edu-year {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .edu-degree {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .edu-institution {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .edu-grade {
+    display: inline-block;
+    background: rgba(200,241,53,0.08);
+    border: 1px solid rgba(200,241,53,0.2);
+    color: var(--accent);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    margin-top: 0.4rem;
+  }
+
+  /* CONTACT */
+  #contact {
+    background: var(--surface);
+  }
+
+  .contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+
+  .contact-item:hover { border-color: var(--accent); }
+
+  .contact-icon {
+    width: 36px; height: 36px;
+    background: rgba(200,241,53,0.1);
+    border: 1px solid rgba(200,241,53,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .contact-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .contact-value {
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+
+  .contact-cta {
+    padding: 3rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .contact-cta h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .contact-cta p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  footer .footer-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { padding: 7rem 1.5rem 4rem; }
+    section { padding: 4rem 1.5rem; }
+    .hero-scroll { left: 1.5rem; }
+    #about .about-grid { grid-template-columns: 1fr; }
+    .contact-wrapper { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">DS.</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Available for opportunities</div>
+    <h1 class="hero-name">
+      Divakar<br><span class="accent">Singaravelu</span>
+    </h1>
+    <p class="hero-subtitle">
+      Full-Stack Developer building web experiences with React, Node.js & Python — currently pursuing BE in Computer Science & an Industry-Ready Certification in Full-Stack Development.
+    </p>
+    <div class="hero-ctas">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — About</div>
+  <h2 class="section-title">Who I Am</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a <span>Computer Science Engineering student</span> at Adhi College of Engineering and Technology, Kanchipuram, currently in my second year (CGPA: 7.5).</p>
+      <p>Alongside my degree, I'm completing an <span>Industry Ready Certification in Full-Stack Development</span> at Nxtwave Disruptive Technologies — sharpening both my frontend and backend skills with real-world projects.</p>
+      <p>I build things that <span>work beautifully</span> — from Wikipedia search apps to task management systems — and I'm constantly pushing to learn more and ship better products.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-item">
+        <div class="stat-number">3+</div>
+        <div class="stat-label">Projects Built</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">7.5</div>
+        <div class="stat-label">CGPA</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">5+</div>
+        <div class="stat-label">Technologies</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Curiosity</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">02 — Skills</div>
+  <h2 class="section-title">What I Work With</h2>
+  <div class="skills-container">
+    <div class="skill-group">
+      <div class="skill-group-title">Frontend</div>
+      <div class="skill-tags">
+        <span class="skill-tag">HTML5</span>
+        <span class="skill-tag">CSS3</span>
+        <span class="skill-tag">Bootstrap</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">React.js</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Backend</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Node.js</span>
+        <span class="skill-tag">Express.js</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Databases</div>
+      <div class="skill-tags">
+        <span class="skill-tag">SQLite</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Other</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Java</span>
+        <span class="skill-tag">REST APIs</span>
+        <span class="skill-tag">DOM Manipulation</span>
+        <span class="skill-tag">Git & GitHub</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">03 — Projects</div>
+  <h2 class="section-title">Things I've Built</h2>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-number">01</div>
+      <h3 class="project-title">Wikipedia Search App</h3>
+      <p class="project-desc">A custom Wikipedia search application that lets users search, view curated results, and navigate to detailed Wikipedia pages.</p>
+      <ul class="project-bullets">
+        <li>Styled results with HTML, CSS, Bootstrap and responsive Flexbox layouts</li>
+        <li>Fetched search results asynchronously via GET HTTP API using fetch()</li>
+        <li>Opens detailed Wikipedia pages in a new tab on result click</li>
+      </ul>
+      <div class="project-tech">
+        <span class="tech-badge">HTML</span>
+        <span class="tech-badge">CSS</span>
+        <span class="tech-badge">JS</span>
+        <span class="tech-badge">REST API</span>
+        <span class="tech-badge">Bootstrap</span>
+      </div>
+      <a href="https://wikipediaspage.ccbp.tech" target="_blank" class="project-link">Live Demo →</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-number">02</div>
+      <h3 class="project-title">Todos Application</h3>
+      <p class="project-desc">A robust task tracking system with full CRUD capabilities, crafted to simplify everyday task management.</p>
+      <ul class="project-bullets">
+        <li>User-friendly interface with HTML, CSS & Bootstrap</li>
+        <li>Dynamic UI updates via JavaScript event listeners and DOM operations</li>
+        <li>Secure task persistence using browser local storage</li>
+      </ul>
+      <div class="project-tech">
+        <span class="tech-badge">HTML</span>
+        <span class="tech-badge">CSS</span>
+        <span class="tech-badge">JS</span>
+        <span class="tech-badge">Bootstrap</span>
+      </div>
+      <a href="https://portfolioswebb.ccbp.tech" target="_blank" class="project-link">Live Demo →</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-number">03</div>
+      <h3 class="project-title">Personal Portfolio</h3>
+      <p class="project-desc">An engaging personal website showcasing education, projects, skills, and contact information built with React.</p>
+      <ul class="project-bullets">
+        <li>Built with React components, props, and dynamic lists</li>
+        <li>Mobile-ready with Bootstrap & CSS responsive design</li>
+        <li>Clean navigation with smooth section transitions</li>
+      </ul>
+      <div class="project-tech">
+        <span class="tech-badge">React JS</span>
+        <span class="tech-badge">Bootstrap</span>
+        <span class="tech-badge">CSS</span>
+      </div>
+      <a href="https://portfolio1com.ccbp.tech" target="_blank" class="project-link">Live Demo →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-label">04 — Education</div>
+  <h2 class="section-title">My Journey</h2>
+  <div class="edu-timeline">
+
+    <div class="edu-item">
+      <div class="edu-year">Aug 2024 – Ongoing</div>
+      <div class="edu-degree">Industry Ready Certification — Full-Stack Development</div>
+      <div class="edu-institution">Nxtwave Disruptive Technologies</div>
+      <span class="edu-grade">In Progress</span>
+    </div>
+
+    <div class="edu-item">
+      <div class="edu-year">2023 – 2027</div>
+      <div class="edu-degree">BE — Computer Science Engineering</div>
+      <div class="edu-institution">Adhi College of Engineering and Technology, Kanchipuram</div>
+      <span class="edu-grade">CGPA: 7.5</span>
+    </div>
+
+    <div class="edu-item">
+      <div class="edu-year">2020 – 2023</div>
+      <div class="edu-degree">Intermediate — MBiPC</div>
+      <div class="edu-institution">Government Boys Higher Secondary School, Tiruvannamalai</div>
+      <span class="edu-grade">71.0%</span>
+    </div>
+
+    <div class="edu-item">
+      <div class="edu-year">2019 – 2020</div>
+      <div class="edu-degree">Secondary School Certificate</div>
+      <div class="edu-institution">Ramu Reddier High School, Tiruvannamalai</div>
+      <span class="edu-grade">85.0%</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">05 — Contact</div>
+  <h2 class="section-title">Let's Connect</h2>
+  <div class="contact-wrapper">
+    <div class="contact-info">
+      <a href="mailto:divakarsingaravelu@gmail.com" class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div>
+          <span class="contact-label">Email</span>
+          <span class="contact-value">divakarsingaravelu@gmail.com</span>
+        </div>
+      </a>
+      <a href="tel:9786388241" class="contact-item">
+        <div class="contact-icon">☎</div>
+        <div>
+          <span class="contact-label">Phone</span>
+          <span class="contact-value">+91 9786388241</span>
+        </div>
+      </a>
+      <a href="https://linkedin.com/in/divakarsingaravelu" target="_blank" class="contact-item">
+        <div class="contact-icon">in</div>
+        <div>
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-value">linkedin.com/in/divakarsingaravelu</span>
+        </div>
+      </a>
+      <a href="https://github.com/Divakarsingaravelu" target="_blank" class="contact-item">
+        <div class="contact-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        </div>
+        <div>
+          <span class="contact-label">GitHub</span>
+          <span class="contact-value">github.com/Divakarsingaravelu</span>
+        </div>
+      </a>
+      <div class="contact-item" style="cursor:default;">
+        <div class="contact-icon">📍</div>
+        <div>
+          <span class="contact-label">Location</span>
+          <span class="contact-value">Tiruvannamalai, Tamil Nadu</span>
+        </div>
+      </div>
+    </div>
+    <div class="contact-cta">
+      <h3>Open to<br><span style="color:var(--accent)">Opportunities</span></h3>
+      <p>Whether it's an internship, freelance project, or just a conversation about tech — I'm always happy to connect and explore what we can build together.</p>
+      <a href="mailto:divakarsingaravelu@gmail.com" class="btn-primary">Send an Email</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span class="footer-name">Divakar Singaravelu</span>. All rights reserved.</p>
+  <p>Built with HTML, CSS & ❤</p>
+</footer>
+
+</body>
+</html>
